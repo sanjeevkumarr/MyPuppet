@@ -1,0 +1,43 @@
+
+    public static void main(String[] args) throws Exception {
+       
+        String vmname = "linux1";
+        String cloneName = "linux_clone";
+        //Accessing Vcenter HQ
+        ServiceInstance si = new ServiceInstance(new URL(""), "", "", true);
+        Folder rootFolder = si.getRootFolder();
+        //Getting the VM
+        System.out.println("rootFolder  " + rootFolder);
+        // si.getServerConnection().logout();
+        VirtualMachine vm = (VirtualMachine) new InventoryNavigator(rootFolder).searchManagedEntity("VirtualMachine", vmname);
+        //Confirming the VM exist
+        if (vm == null) {
+            System.out.println("No VM " + vmname + " found");
+            si.getServerConnection().logout();
+            return;
+        }
+
+
+        System.out.println(" VM found here ");
+        //Getting the specs
+        VirtualMachineCloneSpec cloneSpec = new VirtualMachineCloneSpec();
+        cloneSpec.setLocation(new VirtualMachineRelocateSpec());
+        cloneSpec.setPowerOn(false);
+        cloneSpec.setTemplate(false);
+
+        //Set location of clone to be the same as template (Datastore)
+        cloneSpec.setLocation(new VirtualMachineRelocateSpec());
+
+        System.out.println("Cloning " + vmname + " into " + cloneName);
+        Task task = vm.cloneVM_Task((Folder) vm.getParent(), cloneName, cloneSpec);
+
+        System.out.println("  waitForTask ");
+
+        String status = task.waitForTask();
+        if (status == Task.SUCCESS) {
+            System.out.println("VM cloned successfully.");
+        } else {
+            throw new Exception("Error while cloning VM");
+        }
+
+    }
