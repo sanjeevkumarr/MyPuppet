@@ -1,0 +1,25 @@
+VirtualMachine vm = (VirtualMachine) inventoryNavigator.searchManagedEntity("VirtualMachine", cloneName);
+        VirtualDevice[] d = vm.getConfig().getHardware().getDevice();
+
+        String address ="";
+
+        for (VirtualDevice vd : d) {
+
+            if (vd instanceof VirtualE1000 ) {
+                address = ((VirtualE1000) vd).getMacAddress();
+
+            } else if (vd instanceof VirtualPCNet32) {
+                address = ((VirtualPCNet32) vd).getMacAddress();
+
+            } else if (vd instanceof VirtualVmxnet) {
+                address = ((VirtualVmxnet) vd).getMacAddress();
+
+            } else if (vd instanceof VirtualVmxnet2) {
+                address = ((VirtualVmxnet2) vd).getMacAddress();
+
+            } else if (vd instanceof VirtualVmxnet3) {
+                address = ((VirtualVmxnet3) vd).getMacAddress();
+            }
+
+            System.out.println(" Mac address  "  + address );
+        }
